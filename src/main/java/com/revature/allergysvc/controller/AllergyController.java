@@ -6,15 +6,14 @@ import com.revature.allergysvc.service.AllergyServiceException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
 @RestController
+@RequestMapping("/allergies")
 public class AllergyController {
 
     Logger logger = Logger.getLogger(AllergyController.class.getName());
@@ -25,7 +24,7 @@ public class AllergyController {
         this.allergyService = allergyService;
     }
 
-    @GetMapping("/allergies")
+    @GetMapping("/")
     public ResponseEntity<List<Allergy>> fetchAllAllergies() {
         List<Allergy> allergies = null;
         try {
@@ -40,7 +39,8 @@ public class AllergyController {
         return new ResponseEntity<>(allergies, HttpStatus.OK);
     }
 
-    @GetMapping("/allergy/{id}")
+
+    @GetMapping("/{id}")
     public ResponseEntity<Allergy> fetchAllergyById(@PathVariable("id") int id) {
         Allergy allergy = null;
         try {
