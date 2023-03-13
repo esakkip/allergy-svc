@@ -2,49 +2,53 @@ package com.revature.allergysvc.service;
 
 import com.revature.allergysvc.dao.AllergyDao;
 import com.revature.allergysvc.dao.AllergyDaoException;
+import com.revature.allergysvc.dto.AllergyDTO;
 import com.revature.allergysvc.model.Allergy;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Optional;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 @Service
+@Slf4j
+@RequiredArgsConstructor
 public class AllergyService {
 
-    Logger logger = Logger.getLogger(AllergyService.class.getName());
+    private final AllergyDao allergyDao;
 
-    private AllergyDao allergyDao;
-
-    @Autowired
-    public AllergyService(AllergyDao allergyDao) {
-        this.allergyDao = allergyDao;
-    }
-
-    public List<Allergy> getAllAllergies() throws AllergyServiceException {
+    public List<AllergyDTO> getAllAllergies() throws AllergyServiceException {
         List<Allergy> allergies;
         try {
-            allergies = this.allergyDao.listAllAllergies();
+            allergies = allergyDao.listAllAllergies();
+            log.info("Allergies are retrieved.");
         } catch (AllergyDaoException exception) {
-            logger.log(Level.SEVERE, exception.getMessage());
+            log.error(exception.getMessage());
             throw new AllergyServiceException("Allergy details retrieval failed.", exception);
         }
-        return allergies;
+        return allergies.stream().map(this::mapToAllergyDTO).toList();
+    }
+
+    private AllergyDTO mapToAllergyDTO(Allergy allergy) {
+        return AllergyDTO.builder().id(allergy.getId()).name
+                        (allergy.getName())
+                .build();
     }
 
 
     public Allergy getAllergyById(int id) throws AllergyServiceException {
         Allergy allergy = null;
         try {
-            Optional<Allergy> retrievedAllergy = this.allergyDao.listAllergyById(id);
+            Optional<Allergy> retrievedAllergy = allergyDao.listAllergyById(id);
             if (retrievedAllergy.isPresent()) {
                 allergy = retrievedAllergy.get();
+                log.info("Allergy of id {} is retrieved", allergy.getId());
             }
         } catch (AllergyDaoException exception) {
-            logger.log(Level.SEVERE, exception.getMessage());
-            throw new AllergyServiceException(String.format("Allergy of id %d retrieval failed.", id), exception);
+            log.info("Allergy of id {} retrieval failed.", id);
+            log.error(exception.getMessage());
+            throw new AllergyServiceException(String.format("Allergy of id {} retrieval failed.", id), exception);
         }
         return allergy;
     }
