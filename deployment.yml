@@ -7,7 +7,6 @@ spec:
     matchLabels:
       run: allergy-service-label
   replicas: 2
-
   template:
     metadata:
       labels:
@@ -19,4 +18,5 @@ spec:
           ports:
             - containerPort: 8082
               hostPort: 8082
+
 
