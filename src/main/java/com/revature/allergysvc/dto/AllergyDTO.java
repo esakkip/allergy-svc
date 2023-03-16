@@ -12,4 +12,7 @@ import lombok.NoArgsConstructor;
 public class AllergyDTO {
     private Integer id;
     private String name;
+
+    private String description;
+    private String symptoms;
 }

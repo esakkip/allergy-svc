@@ -32,7 +32,7 @@ public class AllergyService {
 
     private AllergyDTO mapToAllergyDTO(Allergy allergy) {
         return AllergyDTO.builder().id(allergy.getId()).name
-                        (allergy.getName())
+                        (allergy.getName()).description(allergy.getDescription()).symptoms(allergy.getSymptoms())
                 .build();
     }
 
